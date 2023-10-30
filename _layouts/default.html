@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -71,34 +70,14 @@
             text-align: center;
             margin-bottom: 50px;
         }
-
-        .cancer-research-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .cancer-research-table th,
-        .cancer-research-table td {
-            border: 1px solid #4CAF50;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .cancer-research-table th {
-            background-color: #4CAF50;
-            color: #fff;
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <img src="https://github.com/Krishiv111/KPNSTeam/assets/111464993/bcbfbeea-251d-4d2d-a40e-e147e2b9210d" alt="Cancer Research Logo">
+        <a class="btn" href="{{site.baseurl}}/" role="button">
+            <img class="logo" src="https://github.com/Krishiv111/KPNSTeam/assets/111464993/bcbfbeea-251d-4d2d-a40e-e147e2b9210d" width="87.5px" height=auto>
+        </a>
         <nav>
             <ul>
                 <li><a href="{{site.baseurl}}/memorial">Memorial</a></li>
@@ -109,105 +88,8 @@
         </nav>
     </div>
     <main>
-        <div class="intro">
-            <h2>Welcome to Cancer Research</h2>
-            <p>Discover comprehensive information about various types of cancer, recent research, and breakthroughs.</p>
-        </div>
-
-        <h2>Cancer Research Data</h2>
-        <input type="text" id="search-box" class="search-box" placeholder="Search..." onkeyup="searchTable()">
-        <table class="cancer-research-table" id="cancer-research-table">
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Death Rate</th>
-                    <th>Number of People Affected</th>
-                    <th>Average Recovery Time</th>
-                    <th>Symptoms</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data inserted here -->
-            </tbody>
-        </table>
+        {{ content }}
     </main>
-
-    <script>
-        function fetchData() {
-            const apiUrl = 'http://localhost:8023/api/cancers/';
-    
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    displayData(data);
-                })
-                .catch(error => {
-                    console.error('There has been a problem with your fetch operation:', error);
-                });
-        }
-    
-        function displayData(data) {
-            const table = document.querySelector('.cancer-research-table tbody');
-    
-            data.forEach(cancer => {
-                const row = document.createElement('tr');
-    
-                const typeCell = document.createElement('td');
-                typeCell.textContent = cancer.cancerType;
-                row.appendChild(typeCell);
-    
-                const deathRateCell = document.createElement('td');
-                deathRateCell.textContent = cancer.deathRate;
-                row.appendChild(deathRateCell);
-    
-                const numOfPeopleAffectedCell = document.createElement('td');
-                numOfPeopleAffectedCell.textContent = cancer.numOfPeopleAffected;
-                row.appendChild(numOfPeopleAffectedCell);
-    
-                const avgRecoveryTimeCell = document.createElement('td');
-                avgRecoveryTimeCell.textContent = cancer.averageRecoveryTime;
-                row.appendChild(avgRecoveryTimeCell);
-    
-                const symptomsCell = document.createElement('td');
-                symptomsCell.textContent = cancer.symptoms;
-                row.appendChild(symptomsCell);
-    
-                table.appendChild(row);
-            });
-        }
-    
-        function searchTable() {
-            const input = document.getElementById("search-box");
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById("cancer-research-table");
-            const tr = table.getElementsByTagName("tr");
-    
-            for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName("td");
-                let found = false;
-                for (let j = 0; j < td.length; j++) {
-                    const textValue = td[j].textContent || td[j].innerText;
-                    if (textValue.toLowerCase().indexOf(filter) > -1) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    
-        fetchData();
-    </script>
-    
 </body>
 
 </html>
