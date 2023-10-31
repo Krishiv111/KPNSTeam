@@ -1,8 +1,4 @@
----
-layout: default
-title: Test
-permalink: /bodydiagram
----
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,15 +16,25 @@ permalink: /bodydiagram
             fill: #b3cde0;
             stroke: #6497b1;
             stroke-width: 2;
-            cursor: pointer;
         }
 
-        .body-part:hover {
-            fill: #6497b1;
+        .cancer {
+            fill: red;
+            cursor: grab;
         }
 
-        .selected {
-            fill: #005b96;
+        .dragging {
+            cursor: grabbing;
+        }
+
+        .outside-box {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100vh;
+            background-color: #f0f0f0;
+            border-left: 2px solid #ddd;
         }
 
         .modal {
@@ -52,6 +58,8 @@ permalink: /bodydiagram
     </style>
 </head>
 <body>
+    <h1> Operation </h1>
+    <p> Drag the red dot into the gray box</p>
     <div id="body-diagram">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400" width="200" height="400">
             <rect class="body-part" id="head" x="75" y="0" width="50" height="50" rx="25" ry="25"></rect>
@@ -60,8 +68,18 @@ permalink: /bodydiagram
             <rect class="body-part" id="right-arm" x="150" y="50" width="50" height="100"></rect>
             <rect class="body-part" id="left-leg" x="50" y="200" width="50" height="100"></rect>
             <rect class="body-part" id="right-leg" x="100" y="200" width="50" height="100"></rect>
+
+            <circle class="cancer" cx="100" cy="25" r="5" data-cancer-type="Brain Cancer"></circle>
+            <circle class="cancer" cx="75" cy="125" r="5" data-cancer-type="Breast Cancer"></circle>
+            <circle class="cancer" cx="125" cy="125" r="5" data-cancer-type="Lung Cancer"></circle>
+            <circle class="cancer" cx="25" cy="100" r="5" data-cancer-type="Skin Cancer"></circle>
+            <circle class="cancer" cx="175" cy="100" r="5" data-cancer-type="Skin Cancer"></circle>
+            <circle class="cancer" cx="75" cy="250" r="5" data-cancer-type="Colon Cancer"></circle>
+            <circle class="cancer" cx="125" cy="250" r="5" data-cancer-type="Colon Cancer"></circle>
         </svg>
     </div>
+
+    <div class="outside-box" id="outside-box"></div>
 
     <div class="modal" id="modal">
         <div class="modal-content" id="modal-content">
@@ -78,30 +96,88 @@ permalink: /bodydiagram
         const cancerTypeElement = document.getElementById('cancer-type');
         const cancerInfoElement = document.getElementById('cancer-info');
         const closeModal = document.getElementById('close-modal');
-    
-        const bodyPartToCancerType = {
-            'head': ['Brain Cancer'],
-            'left-arm': ['Skin'],
-            'right-arm': ['Skin'],
-            'left-leg': ['Colon',],
-            'right-leg': ['Colon',],
-            'body': ['Stomach', 'Breast', 'Lung', 'Kidney', 'Leukemia', 'Prostate', 'Thyroid', 'Liver', 'Pancreatic', 'Ovarian', 'Bladder', 'Small Intestine'],
-        };
-    
-        bodyParts.forEach(part => {
-            part.addEventListener('click', function() {
-                const cancerTypes = bodyPartToCancerType[this.id];
-                if (cancerTypes) {
-                    fetchData(cancerTypes);
-                }
-            });
-        });
+        const outsideBox = document.getElementById('outside-box');
+        let draggingElement = null;
+        let offsetX = 0;
+        let offsetY = 0;
     
         closeModal.addEventListener('click', function() {
             modal.style.display = 'none';
         });
     
-        function fetchData(cancerTypes) {
+        document.addEventListener('mousedown', function (event) {
+        const target = event.target;
+        if (target.classList.contains('cancer')) {
+            draggingElement = target;
+            draggingElement.classList.add('dragging');
+            const rect = draggingElement.getBoundingClientRect();
+            offsetX = event.clientX - rect.left;
+            offsetY = event.clientY - rect.top;
+
+            if (draggingElement.nodeName === 'circle') {
+                const x = parseFloat(draggingElement.getAttribute('cx'));
+                const y = parseFloat(draggingElement.getAttribute('cy'));
+                const r = parseFloat(draggingElement.getAttribute('r'));
+                const cancerType = draggingElement.getAttribute('data-cancer-type');
+
+                const newElement = document.createElement('div');
+                newElement.classList.add('cancer');
+                newElement.style.position = 'absolute';
+                newElement.style.left = `${x - r}px`;
+                newElement.style.top = `${y - r}px`;
+                newElement.style.width = `${r * 2}px`;
+                newElement.style.height = `${r * 2}px`;
+                newElement.style.borderRadius = '50%';
+                newElement.style.backgroundColor = 'red';
+                newElement.setAttribute('data-cancer-type', cancerType);
+
+                document.body.appendChild(newElement);
+
+                newElement.addEventListener('click', function () {
+                    const rect = newElement.getBoundingClientRect();
+                    if (rect.left > outsideBox.getBoundingClientRect().left) {
+                        fetchData(cancerType, true);
+                    }
+                });
+
+                draggingElement.remove();
+                draggingElement = newElement;
+            }
+        }
+    });
+        document.addEventListener('mousemove', function (event) {
+            if (draggingElement) {
+                const x = event.clientX - offsetX;
+                const y = event.clientY - offsetY;
+                draggingElement.style.left = `${x}px`;
+                draggingElement.style.top = `${y}px`;
+            }
+        });
+    
+        document.addEventListener('mouseup', function () {
+            if (draggingElement) {
+                draggingElement.classList.remove('dragging');
+                draggingElement = null;
+            }
+        });
+    
+        const cancers = document.querySelectorAll('.cancer');
+        cancers.forEach(cancer => {
+            cancer.addEventListener('mouseover', function() {
+                const cancerType = this.getAttribute('data-cancer-type');
+                fetchData(cancerType);
+            });
+    
+            cancer.addEventListener('click', function() {
+                const rect = this.getBoundingClientRect();
+                if (rect.left > outsideBox.getBoundingClientRect().left) {
+                    const cancerType = this.getAttribute('data-cancer-type');
+                    fetchData(cancerType, true);
+                }
+            });
+        });
+    
+        function fetchData(cancerTypes, showModal = false) {
             if (!Array.isArray(cancerTypes)) {
                 cancerTypes = [cancerTypes];
             }
@@ -120,7 +196,7 @@ permalink: /bodydiagram
             Promise.all(promises)
                 .then(data => {
                     data.forEach((cancerData, index) => {
-                        displayData(cancerTypes[index], cancerData);
+                        displayData(cancerTypes[index], cancerData, showModal);
                     });
                 })
                 .catch(error => {
@@ -128,7 +204,7 @@ permalink: /bodydiagram
                 });
         }
     
-        function displayData(cancerType, data) {
+        function displayData(cancerType, data, showModal) {
             const newModal = modal.cloneNode(true);
             const newCancerTypeElement = newModal.querySelector('#cancer-type');
             const newCancerInfoElement = newModal.querySelector('#cancer-info');
@@ -168,7 +244,10 @@ permalink: /bodydiagram
             });
     
             document.body.appendChild(newModal);
-            newModal.style.display = 'flex';
+    
+            if (showModal) {
+                newModal.style.display = 'flex';
+            }
         }
     </script>
     
