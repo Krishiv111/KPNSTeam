@@ -33,10 +33,10 @@ permalink: /memorial/
     </div>
 
     <h2>Add Memorial</h2>
-    <form id="createForm" method="post">
+    <form id="createForm">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
-        <label for "age">Age:</label>
+        <label for="age">Age:</label>
         <input type="number" id="age" name="age" required>
         <label for="cancerType">Cancer Type:</label>
         <input type="text" id="cancerType" name="cancerType" required>
@@ -51,22 +51,21 @@ permalink: /memorial/
         const memorialsContainer = document.getElementById("memorialsContainer");
         const createForm = document.getElementById("createForm");
 
-        // Function to fetch and display data from the API
-        function fetchMemorials() {
-            const apiUrl = "https://kpns.stu.nighthawkcodingsociety.com/api/memorials/";
-           
+        async function fetchMemorials() {
+            const apiUrl = "http://localhost:8023/api/memorials/";
 
-            fetch(apiUrl)
-                .then((response) => response.json())
-                .then((data) => {
-                    renderMemorials(data);
-                })
-                .catch((error) => {
-                    console.error("Error fetching data: ", error);
-                });
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                renderMemorials(data);
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            }
         }
 
-        // Function to render existing memorials as cards
         function renderMemorials(memorials) {
             memorialsContainer.innerHTML = "";
 
@@ -99,79 +98,52 @@ permalink: /memorial/
             });
         }
 
-        // Fetch and display data when the page loads
         window.addEventListener("load", function () {
             fetchMemorials();
         });
 
-        // Event listener to handle form submission
-        createForm.addEventListener("submit", function (e) {
+        createForm.addEventListener("submit", async function (e) {
             e.preventDefault();
 
-            // Gather data from the form
             const name = document.getElementById("name").value;
             const age = document.getElementById("age").value;
             const cancerType = document.getElementById("cancerType").value;
             const favoriteMemory = document.getElementById("favoriteMemory").value;
             const treatmentType = document.getElementById("treatmentType").value;
 
-            // Create a new card for the added memorial
-            const card = document.createElement("div");
-            card.className = "card";
-
-            const nameElement = document.createElement("p");
-            nameElement.innerText = `Name: ${name}`;
-
-            const ageElement = document.createElement("p");
-            ageElement.innerText = `Age: ${age}`;
-
-            const cancerTypeElement = document.createElement("p");
-            cancerTypeElement.innerText = `Cancer Type: ${cancerType}`;
-
-            const favoriteMemoryElement = document.createElement("p");
-            favoriteMemoryElement.innerText = `Favorite Memory: ${favoriteMemory}`;
-
-            const treatmentTypeElement = document.createElement("p");
-            treatmentTypeElement.innerText = `Treatment Type: ${treatmentType}`;
-
-            card.appendChild(nameElement);
-            card.appendChild(ageElement);
-            card.appendChild(cancerTypeElement);
-            card.appendChild(favoriteMemoryElement);
-            card.appendChild(treatmentTypeElement);
-
-            memorialsContainer.appendChild(card);
-
-            // Clear the form fields
-            createForm.reset();
-
-            // Send the memorial data to the API using a POST request
             const memorialData = {
-                name: name,
-                age: age,
-                cancerType: cancerType,
-                favoriteMemory: favoriteMemory,
-                treatmentType: treatmentType,
+                name,
+                age,
+                cancerType,
+                favoriteMemory,
+                treatmentType,
             };
 
-            fetch("https://kpns.stu.nighthawkcodingsociety.com/api/memorials/", {
-                method: "POST",
-                mode :"cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(memorialData),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log("Memorial added:", data);
-                    // You can add further actions if needed after the data is successfully added to the API
-                })
-                .catch((error) => {
-                    console.error("Error posting memorial: ", error);
+            try {
+                const response = await fetch("http://localhost:8023/api/memorials/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(memorialData),
                 });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("Memorial added:", data);
+
+                // Clear the form fields
+                createForm.reset();
+
+                // Fetch and display updated data
+                fetchMemorials();
+            } catch (error) {
+                console.error("Error posting memorial: ", error);
+            }
         });
     </script>
 </body>
 </html>
-
