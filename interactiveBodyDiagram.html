@@ -11,11 +11,29 @@ permalink: /bodydiagram
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Body Diagram</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
         #body-diagram {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            background-color: #fff;
         }
 
         .body-part {
@@ -60,28 +78,72 @@ permalink: /bodydiagram
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content p {
+            margin-bottom: 0;
+        }
+
+        .modal-content button {
+            padding: 10px 15px;
+            background-color: #6497b1;
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1> Operation </h1>
-    <p> Drag the red dot into the gray box</p>
+    <h1>Operation</h1>
+    <p>Drag the red dot into the gray box</p>
     <div id="body-diagram">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400" width="200" height="400">
-            <rect class="body-part" id="head" x="75" y="0" width="50" height="50" rx="25" ry="25"></rect>
-            <rect class="body-part" id="body" x="50" y="50" width="100" height="150"></rect>
-            <rect class="body-part" id="left-arm" x="0" y="50" width="50" height="100"></rect>
-            <rect class="body-part" id="right-arm" x="150" y="50" width="50" height="100"></rect>
-            <rect class="body-part" id="left-leg" x="50" y="200" width="50" height="100"></rect>
-            <rect class="body-part" id="right-leg" x="100" y="200" width="50" height="100"></rect>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400" width="400" height="800">
+            <!-- Body -->
+            <rect class="body-part" id="body" x="50" y="100" width="100" height="150" rx="20" ry="20"></rect>
+            <!-- Arms -->
+            <rect class="body-part" id="left-arm" x="0" y="100" width="50" height="100" rx="20" ry="20"></rect>
+            <rect class="body-part" id="right-arm" x="150" y="100" width="50" height="100" rx="20" ry="20"></rect>
+            <!-- Legs -->
+            <rect class="body-part" id="left-leg" x="50" y="250" width="50" height="100" rx="20" ry="20"></rect>
+            <rect class="body-part" id="right-leg" x="100" y="250" width="50" height="100" rx="20" ry="20"></rect>
+            <!-- Fingers -->
+            <circle class="body-part" id="left-finger" cx="0" cy="200" r="5" fill="peachpuff"></circle>
+            <circle class="body-part" id="right-finger" cx="200" cy="200" r="5" fill="peachpuff"></circle>
+            <!-- Belly Button -->
+            <circle class="body-part" id="belly-button" cx="100" cy="175" r="3" fill="saddlebrown"></circle>
+            <!-- Genitals -->
+            <circle class="body-part" id="genitals" cx="100" cy="225" r="10" fill="peachpuff"></circle>
 
+            <!-- Head -->
+            <circle class="body-part" id="head" cx="100" cy="50" r="50"></circle>
+            <!-- Eyes -->
+            <circle class="body-part" id="left-eye" cx="85" cy="40" r="5" fill="white"></circle>
+            <circle class="body-part" id="right-eye" cx="115" cy="40" r="5" fill="white"></circle>
+            <!-- Nose -->
+            <polygon class="body-part" id="nose" points="100,50 105,60 95,60" fill="peachpuff"></polygon>
+            <!-- Mouth -->
+            <path class="body-part" id="mouth" d="M 90 70 Q 100 80 110 70" fill="transparent" stroke="black"></path>
+            <!-- Hair -->
+            <path class="body-part" id="hair" d="M 50 20 Q 100 0 150 20" fill="saddlebrown"></path>
+            <!-- Ears -->
+            <circle class="body-part" id="left-ear" cx="50" cy="50" r="10" fill="peachpuff"></circle>
+            <circle class="body-part" id="right-ear" cx="150" cy="50" r="10" fill="peachpuff"></circle>
+
+            <!-- Cancer Dots -->
             <circle class="cancer" cx="100" cy="25" r="5" data-cancer-type="Brain Cancer"></circle>
-            <circle class="cancer" cx="75" cy="125" r="5" data-cancer-type="Breast Cancer"></circle>
-            <circle class="cancer" cx="125" cy="125" r="5" data-cancer-type="Lung Cancer"></circle>
-            <circle class="cancer" cx="25" cy="100" r="5" data-cancer-type="Skin Cancer"></circle>
-            <circle class="cancer" cx="175" cy="100" r="5" data-cancer-type="Skin Cancer"></circle>
-            <circle class="cancer" cx="75" cy="250" r="5" data-cancer-type="Colon Cancer"></circle>
-            <circle class="cancer" cx="125" cy="250" r="5" data-cancer-type="Colon Cancer"></circle>
+            <circle class="cancer" cx="75" cy="125" r="5" data-cancer-type="Breast"></circle>
+            <circle class="cancer" cx="125" cy="125" r="5" data-cancer-type="Lung"></circle>
+            <circle class="cancer" cx="25" cy="100" r="5" data-cancer-type="Skin"></circle>
+            <circle class="cancer" cx="175" cy="100" r="5" data-cancer-type="Skin"></circle>
+            <circle class="cancer" cx="75" cy="250" r="5" data-cancer-type="Colon"></circle>
+            <circle class="cancer" cx="125" cy="250" r="5" data-cancer-type="Colon"></circle>
         </svg>
     </div>
 
@@ -94,6 +156,7 @@ permalink: /bodydiagram
             <button id="close-modal">Close</button>
         </div>
     </div>
+
 
     <script>
         const bodyParts = document.querySelectorAll('.body-part');
@@ -112,45 +175,39 @@ permalink: /bodydiagram
         });
     
         document.addEventListener('mousedown', function (event) {
-        const target = event.target;
-        if (target.classList.contains('cancer')) {
-            draggingElement = target;
-            draggingElement.classList.add('dragging');
-            const rect = draggingElement.getBoundingClientRect();
-            offsetX = event.clientX - rect.left;
-            offsetY = event.clientY - rect.top;
-
-            if (draggingElement.nodeName === 'circle') {
-                const x = parseFloat(draggingElement.getAttribute('cx'));
-                const y = parseFloat(draggingElement.getAttribute('cy'));
-                const r = parseFloat(draggingElement.getAttribute('r'));
-                const cancerType = draggingElement.getAttribute('data-cancer-type');
-
-                const newElement = document.createElement('div');
-                newElement.classList.add('cancer');
-                newElement.style.position = 'absolute';
-                newElement.style.left = `${x - r}px`;
-                newElement.style.top = `${y - r}px`;
-                newElement.style.width = `${r * 2}px`;
-                newElement.style.height = `${r * 2}px`;
-                newElement.style.borderRadius = '50%';
-                newElement.style.backgroundColor = 'red';
-                newElement.setAttribute('data-cancer-type', cancerType);
-
-                document.body.appendChild(newElement);
-
-                newElement.addEventListener('click', function () {
-                    const rect = newElement.getBoundingClientRect();
-                    if (rect.left > outsideBox.getBoundingClientRect().left) {
-                        fetchData(cancerType, true);
-                    }
-                });
-
-                draggingElement.remove();
-                draggingElement = newElement;
+            const target = event.target;
+            if (target.classList.contains('cancer')) {
+                draggingElement = target;
+                draggingElement.classList.add('dragging');
+                const rect = draggingElement.getBoundingClientRect();
+                offsetX = event.clientX - rect.left;
+                offsetY = event.clientY - rect.top;
+    
+                if (draggingElement.nodeName === 'circle') {
+                    const x = parseFloat(draggingElement.getAttribute('cx'));
+                    const y = parseFloat(draggingElement.getAttribute('cy'));
+                    const r = parseFloat(draggingElement.getAttribute('r'));
+                    const cancerType = draggingElement.getAttribute('data-cancer-type');
+    
+                    const newElement = document.createElement('div');
+                    newElement.classList.add('cancer');
+                    newElement.style.position = 'absolute';
+                    newElement.style.left = `${x - r}px`;
+                    newElement.style.top = `${y - r}px`;
+                    newElement.style.width = `${r * 2}px`;
+                    newElement.style.height = `${r * 2}px`;
+                    newElement.style.borderRadius = '50%';
+                    newElement.style.backgroundColor = 'red';
+                    newElement.setAttribute('data-cancer-type', cancerType);
+    
+                    document.body.appendChild(newElement);
+    
+                    draggingElement.remove();
+                    draggingElement = newElement;
+                }
             }
-        }
-    });
+        });
+    
         document.addEventListener('mousemove', function (event) {
             if (draggingElement) {
                 const x = event.clientX - offsetX;
@@ -167,20 +224,21 @@ permalink: /bodydiagram
             }
         });
     
-        const cancers = document.querySelectorAll('.cancer');
-        cancers.forEach(cancer => {
-            cancer.addEventListener('mouseover', function() {
-                const cancerType = this.getAttribute('data-cancer-type');
+        document.addEventListener('mouseover', function(event) {
+            if (event.target.classList.contains('cancer')) {
+                const cancerType = event.target.getAttribute('data-cancer-type');
                 fetchData(cancerType);
-            });
+            }
+        });
     
-            cancer.addEventListener('click', function() {
-                const rect = this.getBoundingClientRect();
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('cancer')) {
+                const rect = event.target.getBoundingClientRect();
                 if (rect.left > outsideBox.getBoundingClientRect().left) {
-                    const cancerType = this.getAttribute('data-cancer-type');
+                    const cancerType = event.target.getAttribute('data-cancer-type');
                     fetchData(cancerType, true);
                 }
-            });
+            }
         });
     
         function fetchData(cancerTypes, showModal = false) {
@@ -189,7 +247,7 @@ permalink: /bodydiagram
             }
     
             const promises = cancerTypes.map(cancerType => {
-                const apiUrl = 'https://kpns.stu.nighthawkcodingsociety.com/api/cancers/byCancerType/' + cancerType;
+                const apiUrl = `https://kpns.stu.nighthawkcodingsociety.com/api/cancers/byCancerType/${encodeURIComponent(cancerType)}`;
                 return fetch(apiUrl)
                     .then(response => {
                         if (!response.ok) {
@@ -256,6 +314,7 @@ permalink: /bodydiagram
             }
         }
     </script>
+    
     
 </body>
 </html>
