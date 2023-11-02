@@ -53,7 +53,7 @@ permalink: /memorial/
 
         // Function to fetch and display data from the API
         function fetchMemorials() {
-            const apiUrl = "http://localhost:8023/api/memorials/";
+            const apiUrl = "https://kpns.stu.nighthawkcodingsociety.com/api/memorials/";
            
 
             fetch(apiUrl)
@@ -154,7 +154,7 @@ permalink: /memorial/
                 treatmentType: treatmentType,
             };
 
-            fetch("http://localhost:8023/api/memorials/", {
+            fetch("https://kpns.stu.nighthawkcodingsociety.com/api/memorials/", {
                 method: "POST",
                 mode :"cors",
                 headers: {

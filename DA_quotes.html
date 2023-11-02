@@ -22,7 +22,7 @@ permalink: /quotes/
 
     generateButton.addEventListener('click', () => {
       // Replace the URL with the new endpoint for random quotes.
-      const apiUrl = 'http://localhost:8023/api/quotes/random';
+      const apiUrl = 'https://kpns.stu.nighthawkcodingsociety.com/api/quotes/random/';
       fetch(apiUrl)
         .then(response => response.json())
         .then(data => {

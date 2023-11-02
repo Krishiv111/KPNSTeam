@@ -189,7 +189,7 @@ permalink: /bodydiagram
             }
     
             const promises = cancerTypes.map(cancerType => {
-                const apiUrl = 'http://localhost:8023/api/cancers/byCancerType/' + cancerType;
+                const apiUrl = 'https://kpns.stu.nighthawkcodingsociety.com/api/cancers/byCancerType/' + cancerType;
                 return fetch(apiUrl)
                     .then(response => {
                         if (!response.ok) {
